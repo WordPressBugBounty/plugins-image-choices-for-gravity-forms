@@ -1,9 +1,11 @@
 === Image Picker For Gravity Forms ===
-Contributors: kaisarahmmed
-Tags: Image picker, Gravityforms, GF image picker, radio image, checkbox image
+Author: Pluginscafe
+Author URI: https://pluginscafe.com/
+Contributors: kaisarahmmed, pluginscafe
+Tags: Image Choices, Gravity Forms, forms, images, input images
 Requires at least: 5.0
 Requires PHP: 5.6
-Tested up to: 6.6.1
+Tested up to: 6.7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
@@ -40,6 +42,10 @@ A simple and nice plugin to add images easily on gravity forms radio and checkbo
 
 
 == Change log ==
+= 1.1.2 = 
+* Improve design
+* Compatibility with 2.9
+* Bug Fix
 
 = 1.1.1 =
 * Improve design
