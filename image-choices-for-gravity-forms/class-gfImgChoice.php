@@ -4,14 +4,19 @@ GFForms::include_addon_framework();
 
 class GFImgChoiceAddon extends GFAddOn {
 
-	protected $_version = GF_PC_IMAGE_CHOICES_ADDON_VERSION;
-	protected $_min_gravityforms_version = '1.9';
+	protected $_version = GFIMP_ADDON_VERSION;
+	protected $_min_gravityforms_version = '2.8';
 	protected $_slug = 'image-choices-for-gravity-forms';
 	protected $_path = 'image-choices-for-gravity-forms/gf-img-choices.php';
 	protected $_full_path = __FILE__;
-	protected $_title = 'Image Choices For Gravity Forms';
+	protected $_title = 'Image Picker For Gravity Forms';
 	protected $_short_title = 'Image Picker';
-
+	protected $_defaultTheme = "basic";
+	protected $_defaultColor = "#0077FF";
+	protected $_defaultLargeColumn = "6";
+	protected $_defaultMediumColumn = "4";
+	protected $_defaultSmallColumn = "2";
+	protected $_supported_field_types = ['radio', 'checkbox'];
 	private static $_instance = null;
 
 	/**
@@ -35,20 +40,16 @@ class GFImgChoiceAddon extends GFAddOn {
 		parent::init();
 
 		add_filter('gform_tooltips', array($this, 'gfic_add_tooltips'));
-		add_action('gform_editor_js', array($this, 'gfic_editor_script'));
 		add_action('gform_enqueue_scripts', array($this, 'add_frontend_enqueue_styles'), 10, 2);
 		add_filter('gform_field_choice_markup_pre_render', array($this, 'gfic_label_image_field'), 10, 4);
 		add_filter('gform_field_css_class', array($this, 'gfic_custom_class'), 10, 3);
-		if (PC_IC_GF_MIN_2_5) {
-			add_filter('gform_field_settings_tabs', array($this, 'gfic_fields_settings_tab'), 10, 2);
-			add_action('gform_field_settings_tab_content_img_choice_tab', array($this, 'gfic_fields_settings_tab_content'), 10, 2);
-		} else {
-			add_action('gform_field_advanced_settings', array($this, 'gfic_advanced_settings'), 10, 2);
-		}
+
+		add_filter('gform_field_settings_tabs', array($this, 'gfic_fields_settings_tab'), 10, 2);
+		add_action('gform_field_settings_tab_content_img_choice_tab', array($this, 'gfic_fields_settings_tab_content'), 10, 2);
 	}
 
 	public function get_menu_icon() {
-		return '<svg width="74" height="58" viewBox="0 0 74 58" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 42.3846L20.5195 23.8651C21.2695 23.1151 22.1599 22.5202 23.1398 22.1142C24.1198 21.7083 25.1701 21.4994 26.2308 21.4994C27.2915 21.4994 28.3418 21.7083 29.3217 22.1142C30.3016 22.5202 31.192 23.1151 31.9421 23.8651L50.4615 42.3846M45.0769 37L50.1349 31.9421C50.8849 31.192 51.7753 30.5971 52.7552 30.1912C53.7352 29.7853 54.7855 29.5763 55.8462 29.5763C56.9068 29.5763 57.9571 29.7853 58.9371 30.1912C59.917 30.5971 60.8074 31.192 61.5574 31.9421L72 42.3846M7.38462 55.8462H66.6154C68.0435 55.8462 69.4131 55.2788 70.4229 54.269C71.4327 53.2592 72 51.8896 72 50.4615V7.38462C72 5.95653 71.4327 4.58693 70.4229 3.57712C69.4131 2.56731 68.0435 2 66.6154 2H7.38462C5.95653 2 4.58693 2.56731 3.57712 3.57712C2.56731 4.58693 2 5.95653 2 7.38462V50.4615C2 51.8896 2.56731 53.2592 3.57712 54.269C4.58693 55.2788 5.95653 55.8462 7.38462 55.8462ZM45.0769 15.4615H45.1056V15.4903H45.0769V15.4615ZM46.4231 15.4615C46.4231 15.8186 46.2813 16.161 46.0288 16.4134C45.7763 16.6659 45.4339 16.8077 45.0769 16.8077C44.7199 16.8077 44.3775 16.6659 44.125 16.4134C43.8726 16.161 43.7308 15.8186 43.7308 15.4615C43.7308 15.1045 43.8726 14.7621 44.125 14.5097C44.3775 14.2572 44.7199 14.1154 45.0769 14.1154C45.4339 14.1154 45.7763 14.2572 46.0288 14.5097C46.2813 14.7621 46.4231 15.1045 46.4231 15.4615Z" stroke="#252748" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+		return file_get_contents($this->get_base_path() . '/assets/images/image_picker.svg');
 	}
 
 	/**
@@ -59,12 +60,13 @@ class GFImgChoiceAddon extends GFAddOn {
 	public function scripts() {
 		$scripts = array(
 			array(
-				'handle'  => 'gfic_admin_script',
-				'src'     => $this->get_base_url() . '/assets/js/image-choice-end.js',
+				'handle'  => 'gfimp_admin_script',
+				'src'     => $this->get_base_url() . '/assets/js/image-picker-admin.js',
 				'version' => $this->_version,
 				'deps'    => array('jquery', 'wp-color-picker'),
 				'enqueue'  => array(
-					array('admin_page' => array('form_editor', 'plugin_settings')),
+					array('admin_page' => array('form_editor', 'plugin_settings', 'form_settings')),
+					array($this, 'maybe_enqueue_main_scripts_styles')
 				)
 			)
 		);
@@ -75,19 +77,21 @@ class GFImgChoiceAddon extends GFAddOn {
 	public function styles() {
 		$styles = array(
 			array(
-				'handle'  => 'gfic_admin_style',
-				'src'     => $this->get_base_url() . '/assets/css/gfic_admin_style.css',
+				'handle'  => 'gfimp_admin_style',
+				'src'     => $this->get_base_url() . '/assets/css/gfimp_admin_style.css',
 				'version' => $this->_version,
 				'enqueue' => array(
-					array('admin_page' => array('form_editor', 'plugin_settings')),
+					array('admin_page' => array('form_editor', 'plugin_settings', 'form_settings')),
+					array($this, 'maybe_enqueue_main_scripts_styles')
 				)
 			),
 			array(
-				'handle'  => 'gfic_front_style',
-				'src'     => $this->get_base_url() . '/assets/css/gfic_front_style.css',
+				'handle'  => 'gfimp_front_style',
+				'src'     => $this->get_base_url() . '/assets/css/gfimp_front_style.css',
 				'version' => $this->_version,
 				'enqueue' => array(
-					array('field_types' => array('radio', 'checkbox'))
+					array('field_types' => array('radio', 'checkbox')),
+					array($this, 'maybe_enqueue_main_scripts_styles')
 				)
 			)
 		);
@@ -108,6 +112,20 @@ class GFImgChoiceAddon extends GFAddOn {
 		}
 	}
 
+	public function maybe_enqueue_main_scripts_styles($form) {
+		return (!empty($form) && $this->form_contains_image_picker_fields($form));
+	}
+
+	public function form_contains_image_picker_fields($form) {
+		$has_image_picker = false;
+		foreach ($form['fields'] as $field) {
+			if ($this->field_has_image_picker_enabled($field)) {
+				$has_image_picker = true;
+				break;
+			}
+		}
+		return $has_image_picker;
+	}
 
 	public function gfic_fields_settings_tab($tabs, $form) {
 		$tabs[] = array(
@@ -124,256 +142,496 @@ class GFImgChoiceAddon extends GFAddOn {
 		return $tabs;
 	}
 
-
 	public function gfic_fields_settings_tab_content($form) {
-?>
+		$columns = $this->get_columns();
+		$theme_setting_value = $this->get_active_value_for_fields($form, 'gfimp_theme', $this->get_themes(), $this->_defaultTheme);
+		$large_column_setting_value = $this->get_active_value_for_fields($form, 'gfimp_column_large', $columns, $this->_defaultLargeColumn);
+		$medium_column_setting_value = $this->get_active_value_for_fields($form, 'gfimp_column_medium', $columns, $this->_defaultMediumColumn);
+		$small_column_setting_value = $this->get_active_value_for_fields($form, 'gfimp_column_small', $columns, $this->_defaultSmallColumn);
 
+?>
 		<li class="img_choice_field_setting field_setting">
 			<ul>
 				<li class="imgchoice_check" style="margin-bottom: 15px">
 					<input type="checkbox" id="gfic_enable_imgchoice" onclick="SetFieldProperty('initImageGField', this.checked);" />
 					<label for="gfic_enable_imgchoice" class="inline">
-						<?php _e("Enable Image Picker Options", "gravityforms"); ?>
+						<?php esc_html_e("Enable Image Picker Options", "image-choices-for-gravity-forms"); ?>
 						<?php gform_tooltip("enable_image_choices"); ?>
 					</label>
 				</li>
-				<li class="imgchoice_column" style="margin-bottom: 15px">
-					<label for="gfic_imgcolumn_label" class="section_label">
-						<?php _e("Choose Column", "gravityforms"); ?>
-						<?php gform_tooltip("img_column"); ?>
-					</label>
-					<select name="pcafe_imgp_column" id="pcafe_imgp_column" onChange="SetFieldProperty('pcafeImgpColumn', this.value);">
-						<option value="">Auto</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-					</select>
-				</li>
-				<li class="pcafe_imgp_new_design" style="margin-bottom: 15px">
-					<input type="checkbox" id="pcafe_imgp_new_style" onclick="SetFieldProperty('pcafeNewStyle', this.checked);" />
-					<label for="pcafe_imgp_new_style" class="inline">
-						<?php _e("Use new design", "gravityforms"); ?>
-						<?php gform_tooltip("pcafe_imgp_new_design"); ?>
-					</label>
-				</li>
+				<ul class="gfimp_options">
+					<li class="gfimp_theme_setting">
+						<label for="gfimp_theme" class="section_label">
+							<?php esc_html_e("Choose Theme", "image-choices-for-gravity-forms"); ?>
+							<?php gform_tooltip("img_column"); ?>
+						</label>
+						<select name="gfimp_theme" id="gfimp_theme" onchange="SetFieldProperty('gfimp_theme', this.value);">
+							<option value="form_setting">
+								<?php /* translators: %s: theme settings value */ echo sprintf(esc_html__("Use Form Setting (%s)", "image-choices-for-gravity-forms"), esc_html($theme_setting_value)); ?></option>
+							<?php
+							$themes = $this->get_themes();
+							foreach ($themes as $theme_key => $theme_label) {
+								echo '<option value="' . esc_attr($theme_key) . '">' . esc_html($theme_label) . '</option>';
+							}
+							?>
+						</select>
+					</li>
+					<li class="imgchoice_column" style="margin-bottom: 15px">
+						<label for="gfic_imgcolumn_label" class="section_label">
+							<?php esc_html_e("Choose Large device column", "image-choices-for-gravity-forms"); ?>
+							<?php gform_tooltip("img_column"); ?>
+						</label>
+						<select name="pcafe_imgp_column" id="pcafe_imgp_column" onChange="SetFieldProperty('pcafeImgpColumn', this.value);">
+							<option value="form_setting">
+								<?php /* translators: %s: theme settings value */ echo sprintf(esc_html__("Use Form Setting (%s)", "image-choices-for-gravity-forms"), esc_html($large_column_setting_value)); ?></option>
+							<?php
+							foreach ($columns as $column_key => $column_label) {
+								echo '<option value="' . esc_attr($column_key) . '">' . esc_html($column_label) . '</option>';
+							}
+							?>
+						</select>
+					</li>
+					<li class="gfimp_column_medium_setting" style="margin-bottom: 15px">
+						<label for="gfimp_column_medium" class="section_label">
+							<?php esc_html_e("Choose medium device column", "image-choices-for-gravity-forms"); ?>
+							<?php gform_tooltip("img_column"); ?>
+						</label>
+						<select name="gfimp_column_medium" id="gfimp_column_medium" onChange="SetFieldProperty('gfimp_column_medium', this.value);">
+							<option value="form_setting">
+								<?php /* translators: %s: theme settings value */ echo sprintf(esc_html__("Use Form Setting (%s)", "image-choices-for-gravity-forms"), esc_html($medium_column_setting_value)); ?></option>
+							<?php
+							foreach ($columns as $column_key => $column_label) {
+								echo '<option value="' . esc_attr($column_key) . '">' . esc_html($column_label) . '</option>';
+							}
+							?>
+						</select>
+					</li>
+					<li class="gfimp_column_small_setting" style="margin-bottom: 15px">
+						<label for="gfimp_column_small" class="section_label">
+							<?php esc_html_e("Choose small device column", "image-choices-for-gravity-forms"); ?>
+							<?php gform_tooltip("img_column"); ?>
+						</label>
+						<select name="gfimp_column_small" id="gfimp_column_small" onChange="SetFieldProperty('gfimp_column_small', this.value);">
+							<option value="form_setting">
+								<?php /* translators: %s: theme settings value */ echo sprintf(esc_html__("Use Form Setting (%s)", "image-choices-for-gravity-forms"), esc_html($small_column_setting_value)); ?></option>
+							<?php
+							foreach ($columns as $column_key => $column_label) {
+								echo '<option value="' . esc_attr($column_key) . '">' . esc_html($column_label) . '</option>';
+							}
+							?>
+						</select>
+					</li>
+				</ul>
 			</ul>
 		</li>
 
-
-	<?php
-	}
-
-
-	public function gfic_advanced_settings($position, $form_id) {
-		if ($position == 550) {
-			$this->gfic_fields_settings_tab_content(GFAPI::get_form($form_id));
-		}
+		<?php
 	}
 
 	public function gfic_label_image_field($choice_markup, $choice, $field, $value) {
-
-		if (property_exists($field, 'initImageGField') && $field->initImageGField) {
-
-			$img = (isset($choice['imageUrl'])) ? $choice['imageUrl'] : '';
-			$imgID = (isset($choice['imageId'])) ? $choice['imageId'] : '';
-
-			if ($img) {
-				$img_markup = "<img src=" . $img . " />";
-			} else {
-				$img_markup = "";
-			}
-
-			if ($field->pcafeNewStyle === true) {
-				return str_replace($choice['text'] . "</label>", "<span class='pcafe_imgp_wrap'>" . $img_markup . "</span>" . "<span class='pcafe_imgp_text'>" . $choice['text'] . "</span></label>", $choice_markup);
-			}
-
-			return str_replace("</label>", $img_markup . "</label>", $choice_markup);
+		if (! $this->field_has_image_picker_enabled($field)) {
+			return $choice_markup;
 		}
+
+		$image_url = (isset($choice['imageUrl'])) ? $choice['imageUrl'] : '';
+
+		if (is_admin()) {
+			$image_markup = '<span class="pcafe_imgp_wrap"><img src="' . esc_url($image_url) . '" /></span>';
+		} else {
+			if (!empty($image_url)) {
+				$image_markup = '<span class="pcafe_imgp_wrap"><img src="' . esc_url($image_url) . '" alt="' . esc_attr($choice['text']) . '" class="image_picker_image" /></span>';
+			} else {
+				$image_markup = '<span class="pcafe_imgp_wrap"></span>';
+			}
+		}
+
+		$choice_markup = preg_replace('#<label\b([^>]*)>(.*?)</label\b[^>]*>#s', implode("", [
+			'<label ${1} >',
+			$image_markup,
+			'<span class="pcafe_imgp_text">${2}</span>',
+			'</label>',
+		]), $choice_markup);
 
 		return $choice_markup;
 	}
 
-	function gfic_custom_class($classes, $field, $form) {
+	public function gfic_custom_class($classes, $field, $form) {
+		if (! $this->field_has_image_picker_enabled($field)) {
+			return $classes;
+		}
 
-		$color = $this->get_plugin_setting('pcafe_imgp_color');
+		$classes .= GFCommon::is_form_editor() ? ' pcafe_imgp_admin' : ' init_pcafe_imgp';
 
-		if ($field->initImageGField === true && $field->type == 'radio' || $field->initImageGField === true && $field->type == 'checkbox') {
-			if (is_admin()) {
-				$classes .= ' pcafe_imgp_admin';
-			}
+		if (is_admin()) {
+			return $classes;
+		}
 
-			$classes .= $field->pcafeNewStyle === true ? ' pcafe_image_picker' : ' pc_image_choice';
+		$legacy_theme = $field->pcafeNewStyle === true ? 'card' : $this->_defaultTheme;
 
-			$classes .= $field->pcafeImgpColumn != '' ? ' pcafe_imgp_col_' . $field->pcafeImgpColumn : ' pcafe_imgp_col_auto';
+		$theme_name = $this->get_active_settings_value($form, $field, 'gfimp_theme', 'gfimp_theme', $legacy_theme);
+		$large_column = $this->get_active_settings_value($form, $field, 'gfimp_column_large', 'pcafeImgpColumn', $this->_defaultLargeColumn, true);
+		$medium_column = $this->get_active_settings_value($form, $field, 'gfimp_column_medium', 'gfimp_column_medium', $this->_defaultMediumColumn, true);
+		$small_column = $this->get_active_settings_value($form, $field, 'gfimp_column_small', 'gfimp_column_small', $this->_defaultSmallColumn, true);
 
-			$classes .= $field->pcafeNewStyle !== true && $field->pcafeImgpColumn != '' ? ' old_design' : '';
+		if ($theme_name != '') {
+			$classes .= ' pcafe_theme_' . $theme_name;
+		}
 
-			if ($color != '') {
-				$classes .= ' pcafe_imgp_color_' . ltrim($color, '#');
-			}
+		if ($large_column != '' && $large_column != 'default') {
+			$classes .= ' pcafe_imgp_col_lg_' . $large_column;
+		}
+
+		if ($medium_column != '') {
+			$classes .= ' pcafe_imgp_col_md_' . $medium_column;
+		}
+
+		if ($small_column != '') {
+			$classes .= ' pcafe_imgp_col_sm_' . $small_column;
 		}
 
 		return $classes;
 	}
 
-	function add_frontend_enqueue_styles($form, $is_ajax) {
-		$color = $this->get_plugin_setting('pcafe_imgp_color');
-
-		$fields_data = [];
-
-		$styles = '';
-
-		foreach ($form['fields'] as $field) {
-
-			if ($field->type === "radio" || $field->type === "checkbox") {
-				$form = (array) GFFormsModel::get_form_meta($field->formId);
-				$fields_data[] = GFFormsModel::get_field($form, $field->id);
-
-				$styles .= $this->inline_styles($color, $field->pcafeImgpColumn);
-			}
-		}
-
-		if (count($fields_data) === 0) {
+	public function add_frontend_enqueue_styles($form, $is_ajax) {
+		if (is_admin() || wp_doing_ajax()) {
 			return;
 		}
 
-		wp_add_inline_style("gfic_front_style", $styles);
-	}
 
-	function inline_styles($color, $column) {
-		$css = '';
+		$form_id = rgar($form, 'id');
+		$form_settings = $this->get_form_settings($form);
 
-		if ($color != '') {
-			$style_class = '.pcafe_imgp_color_' . ltrim($color, '#');
+		ob_start();
+		$global_color = $this->get_plugin_setting_value('pcafe_imgp_color', $this->_defaultColor);
 
-			$css .= "
-				body .gform_wrapper .pcafe_image_picker$style_class .gfield_checkbox .gchoice input:checked+label,
-				body .gform_wrapper .pcafe_image_picker$style_class .gfield_radio .gchoice input:checked+label {
-					border-color: $color;
-				}
-				body .gform_wrapper .pcafe_image_picker$style_class .gfield_checkbox .gchoice input:checked+label .pcafe_imgp_text,
-				body .gform_wrapper .pcafe_image_picker$style_class .gfield_radio .gchoice input:checked+label .pcafe_imgp_text {
-					color: $color;
-				}
-				body .gform_wrapper .pcafe_image_picker .gfield_checkbox .gchoice .pcafe_imgp_wrap:before,
-				body .gform_wrapper .pcafe_image_picker .gfield_radio .gchoice .pcafe_imgp_wrap:before{
-					background-color: $color;
-				}
-			";
+		if (!empty($global_color)) {
+		?>
+			.gform_wrapper .gfield.init_pcafe_imgp[class*="pcafe_theme_"] {
+			--gfimp-global-color: <?php echo esc_attr($global_color); ?>;
+			}
+		<?php
 		}
 
-		if ($column != '' && $column != 'auto') {
-			$column_class = '.pcafe_imgp_col_' . $column;
+		$global_overrides_css = ob_get_clean();
+		$global_overrides_css_ref = 'gfimp_global_overrides_css__' . $form_id;
 
-			$css .= "
-				body .gform_wrapper .gfield$column_class .gfield_radio, 
-				body .gform_wrapper .gfield$column_class .gfield_checkbox{
-					display: grid;
-					grid-template-columns: repeat($column, 1fr);
-					gap: 18px;
-				}
-				@media only screen and (min-width: 768px) and (max-width: 991px) { 
-					body .gform_wrapper .gfield$column_class .gfield_radio, 
-					body .gform_wrapper .gfield$column_class .gfield_checkbox{
-						grid-template-columns: 1fr 1fr 1fr;
-					}
-				}
-				@media only screen and (max-width: 767px) {
-					body .gform_wrapper .gfield$column_class .gfield_radio, 
-					body .gform_wrapper .gfield$column_class .gfield_checkbox{
-						grid-template-columns: 1fr 1fr;
-						gap: 16px;
-					}
-				}
-			";
+		if (!wp_style_is($global_overrides_css_ref) && !empty($global_overrides_css)) {
+			wp_register_style($global_overrides_css_ref, false);
+			wp_enqueue_style($global_overrides_css_ref);
+			wp_add_inline_style($global_overrides_css_ref, $global_overrides_css);
 		}
 
-		return trim(preg_replace('/\s\s+/', '', $css));
-	}
+		ob_start();
+		// Form settings
+		$form_color = $this->get_form_setting_value('pcafe_imgp_color', $form_settings);
 
-	function gfic_editor_script() {
-	?>
-
-		<script type='text/javascript'>
-			//adding setting to fields of type "date"
-
-			console.log(fieldSettings);
-
-			fieldSettings.radio += ", .img_choice_field_setting";
-			fieldSettings.checkbox += ", .img_choice_field_setting";
-
-			//binding to the load field settings event to initialize the checkbox
-
-			jQuery(document).bind("gform_load_field_settings", function(event, field, form) {
-				jQuery("#gfic_enable_imgchoice").prop('checked', Boolean(rgar(field, 'initImageGField')));
-				jQuery("#pcafe_imgp_new_style").prop('checked', Boolean(rgar(field, 'pcafeNewStyle')));
-				jQuery("#pcafe_imgp_column").val(field["pcafeImgpColumn"]);
-			});
-
-			jQuery('.choices_setting')
-				.on('input propertychange', '.field-choice-image-id', function() {
-					var $this = jQuery(this);
-					var i = $this.closest('li.field-choice-row').data('index');
-
-					field = GetSelectedField();
-					field.choices[i].imageId = $this.val();
-				});
-			jQuery('.choices_setting')
-				.on('input propertychange', '.field-choice-image-url', function() {
-					var $this = jQuery(this);
-					var i = $this.closest('li.field-choice-row').data('index');
-
-					field = GetSelectedField();
-					field.choices[i].imageUrl = $this.val();
-				});
-			gform.addFilter('gform_append_field_choice_option', function(str, field, i) {
-				var inputType = GetInputType(field);
-				var imageId = field.choices[i].imageId ? field.choices[i].imageId : '';
-				var imageurl = field.choices[i].imageUrl ? field.choices[i].imageUrl : '';
-				if (field['type'] === "radio" || field['type'] === "checkbox") {
-
-					return "<input type='hidden' id='" + inputType + "_choice_image_id_" + i + "' value='" + imageId + "' class='field-choice-input field-choice-image-id' /><input type='hidden' id='" + inputType + "_choice_image_url_" + i + "' value='" + imageurl + "' class='field-choice-input field-choice-image-url' /><div class='show_hide_trigger'><button type='button' class='pc_image_media_upload'><i class='dashicons dashicons-format-image'></i></button><span class='image_preview_box' style='display:none'><span class='img_pick_preview'></span><span class='remove_pick_img'><i class='dashicons dashicons-no'></i></span></span></div>";
-				}
-
-				return "";
-			});
-		</script>
-
+		if (!empty($form_color) && $form_color != 'global_setting') {
+		?>
+			#gform_<?php echo esc_attr($form_id); ?> .gform_fields .init_pcafe_imgp[class*="pcafe_theme_"] {
+			--gfimp-global-color: <?php echo esc_attr($form_color); ?>;
+			}
 <?php
-	}
+		}
 
+		$form_overrides_css = ob_get_clean();
+		$form_overrides_css_ref = 'gfimp_form_overrides_css__' . $form_id;
+
+		if (!wp_style_is($form_overrides_css_ref) && !empty($form_overrides_css)) {
+			wp_register_style($form_overrides_css_ref, false);
+			wp_enqueue_style($form_overrides_css_ref);
+			wp_add_inline_style($form_overrides_css_ref, $form_overrides_css);
+		}
+	}
 
 	public function gfic_add_tooltips() {
-		$tooltips['enable_image_choices'] = esc_html__("Check this box to enable and show image choices options.", "gravityforms");
-		$tooltips['pcafe_imgp_new_design'] = esc_html__("Check this box to enable new design.", "gravityforms");
-		$tooltips['img_column'] = esc_html__("Choose column for showing on frontend form.", "gravityforms");
+		$tooltips['enable_image_choices'] = esc_html__("Check this box to enable and show image choices options.", "image-choices-for-gravity-forms");
+		$tooltips['pcafe_imgp_new_design'] = esc_html__("Check this box to enable new design.", "image-choices-for-gravity-forms");
+		$tooltips['img_column'] = esc_html__("Choose column for showing on frontend form.", "image-choices-for-gravity-forms");
 
 		return $tooltips;
 	}
 
+	public function field_has_image_picker_enabled($field) {
+		return !empty($field) && in_array($field->type, $this->_supported_field_types) && property_exists($field, 'initImageGField') && $field->initImageGField === true;
+	}
+
+
+	public function form_settings_fields($form) {
+		$settings = [];
+
+		$settings[] = $this->theme_setting_section(true);
+		$settings[] = $this->layout_setting_section(true);
+		$settings[] = $this->color_setting_section(true);
+
+		return $settings;
+	}
 
 	public function plugin_settings_fields() {
+
+		$settings = [];
+
+		$settings[] = $this->theme_setting_section();
+		$settings[] = $this->layout_setting_section();
+		$settings[] = $this->color_setting_section();
+
+		return $settings;
+	}
+
+	public function theme_setting_section($is_form_settings = false) {
+		$theme = $this->get_themes();
+		$selected_theme = $this->get_plugin_setting('gfimp_theme') ?? 'basic';
+
+		if ($is_form_settings) {
+			$global_theme = [
+				'label' => sprintf(
+					/* translators: %s: Global alignment value */
+					esc_html__('Use Global Setting - (%s)', 'image-choices-for-gravity-forms'),
+					esc_html($theme[$selected_theme])
+				),
+				'value' => 'global_setting',
+			];
+			$themes = array_merge(
+				[$global_theme],
+				$this->setting_options_convert_into_array($theme)
+			);
+		} else {
+			$themes = $this->setting_options_convert_into_array($theme);
+		}
+
 		return array(
-			array(
-				'title'  => esc_html__('Image Picker Options', 'pdf-invoices-for-gravityforms'),
-				'fields' => array(
-					array(
-						'name'      => 'pcafe_imgp_color',
-						'label'     => esc_html__('Image Picker Color', 'pdf-invoices-for-gravityforms'),
-						'tooltip'   => esc_html__('Choose your color', 'pdf-invoices-for-gravityforms'),
-						'type'      => 'text',
-						'class'     => 'medium',
-						'default_value' => '#0077FF',
-						'required'  =>  true
-					)
+			'title'  => esc_html__('Theme Options', 'image-choices-for-gravity-forms'),
+			'class'  => 'gform-settings-panel--half',
+			'type' => 'section',
+			'fields' => array(
+				array(
+					'name'      => 'gfimp_theme',
+					'label'     => esc_html__('Themes', 'image-choices-for-gravity-forms'),
+					'tooltip'   => esc_html__('Choose theme for image picker', 'image-choices-for-gravity-forms'),
+					'type'      => 'select',
+					'choices'   => $themes
+				)
+			)
+		);
+	}
+
+	public function layout_setting_section($is_form_settings = false) {
+		$layout = $this->get_columns();
+		$large_selected_column = $this->get_plugin_setting('gfimp_column_large') ?? $this->_defaultLargeColumn;
+		$medium_selected_column = $this->get_plugin_setting('gfimp_column_medium') ?? $this->_defaultMediumColumn;
+		$small_selected_column = $this->get_plugin_setting('gfimp_column_small') ?? $this->_defaultSmallColumn;
+
+		if ($is_form_settings) {
+			$global_large_column = [
+				'label' => sprintf(
+					/* translators: %s: Global alignment value */
+					esc_html__('Use Global Setting - (%s)', 'image-choices-for-gravity-forms'),
+					esc_html($layout[$large_selected_column])
+				),
+				'value' => 'global_setting',
+			];
+
+			$global_medium_column = [
+				'label' => sprintf(
+					/* translators: %s: Global alignment value */
+					esc_html__('Use Global Setting - (%s)', 'image-choices-for-gravity-forms'),
+					esc_html($layout[$medium_selected_column])
+				),
+				'value' => 'global_setting',
+			];
+
+			$global_small_column = [
+				'label' => sprintf(
+					/* translators: %s: Global alignment value */
+					esc_html__('Use Global Setting - (%s)', 'image-choices-for-gravity-forms'),
+					esc_html($layout[$small_selected_column])
+				),
+				'value' => 'global_setting',
+			];
+
+
+			$large_column = array_merge(
+				[$global_large_column],
+				$this->setting_options_convert_into_array($layout)
+			);
+
+			$medium_column = array_merge(
+				[$global_medium_column],
+				$this->setting_options_convert_into_array($layout)
+			);
+
+			$small_column = array_merge(
+				[$global_small_column],
+				$this->setting_options_convert_into_array($layout)
+			);
+		} else {
+			$large_column = $this->setting_options_convert_into_array($layout);
+			$medium_column = $this->setting_options_convert_into_array($layout);
+			$small_column = $this->setting_options_convert_into_array($layout);
+		}
+
+		return array(
+			'title'  => esc_html__('Layout Options', 'image-choices-for-gravity-forms'),
+			'class'  => 'gform-settings-panel--half',
+			'type' => 'section',
+			'fields' => array(
+				array(
+					'name'      => 'gfimp_column_large',
+					'label'     => esc_html__('Column - Large Device', 'image-choices-for-gravity-forms'),
+					'tooltip'   => esc_html__('Choose choose column for large device', 'image-choices-for-gravity-forms'),
+					'type'      => 'select',
+					'choices'   => $large_column
+				),
+				array(
+					'name'      => 'gfimp_column_medium',
+					'label'     => esc_html__('Column - Medium Device', 'image-choices-for-gravity-forms'),
+					'tooltip'   => esc_html__('Choose choose column for large device', 'image-choices-for-gravity-forms'),
+					'type'      => 'select',
+					'choices'   => $medium_column
+				),
+				array(
+					'name'      => 'gfimp_column_small',
+					'label'     => esc_html__('Column - Small Device', 'image-choices-for-gravity-forms'),
+					'tooltip'   => esc_html__('Choose choose column for large device', 'image-choices-for-gravity-forms'),
+					'type'      => 'select',
+					'choices'   => $small_column
 				),
 			)
 		);
+	}
+
+	public function color_setting_section($is_form_settings = false) {
+
+		return array(
+			'title'  => esc_html__('Color Options', 'image-choices-for-gravity-forms'),
+			'class'  => 'gform-settings-panel--half',
+			'type' => 'section',
+			'fields' => array(
+				array(
+					'name'      => 'pcafe_imgp_color',
+					'label'     => esc_html__('Image Picker Color', 'image-choices-for-gravity-forms'),
+					'tooltip'   => esc_html__('Choose your color', 'image-choices-for-gravity-forms'),
+					'type'      => 'text',
+					'class'     => 'medium',
+					'default_value' => '#0077FF',
+				)
+			)
+		);
+	}
+
+	public function get_themes() {
+		return [
+			'basic'		=> esc_html__('Basic', 'image-choices-for-gravity-forms'),
+			'simple'	=> esc_html__('Simple', 'image-choices-for-gravity-forms'),
+			'card'      => esc_html__('Card', 'image-choices-for-gravity-forms'),
+		];
+	}
+
+	public function get_columns() {
+		return [
+			'default' => esc_html__("Theme Default", "image-choices-for-gravity-forms"),
+			'1'  => '1',
+			'2'  => '2',
+			'3'  => '3',
+			'4'  => '4',
+			'5'  => '5',
+			'6'  => '6',
+			'7'  => '7',
+			'8'  => '8',
+			'9'  => '9',
+			'10' => '10',
+			'11' => '11',
+			'12' => '12',
+		];
+	}
+	protected function setting_options_convert_into_array($choices) {
+		$options = array();
+		foreach ($choices as $choice_value => $choice_label) {
+			$options[] = array(
+				'value' => $choice_value,
+				'label' => $choice_label,
+			);
+		}
+		return $options;
+	}
+
+	public function get_plugin_setting_value($setting_key, $default_value = null, $plugin_settings = null) {
+		if (empty($setting_key)) {
+			return null;
+		}
+
+		if (empty($plugin_settings)) {
+			$value = $this->get_plugin_setting($setting_key);
+		} else {
+			$value = (isset($plugin_settings[$setting_key])) ? $plugin_settings[$setting_key] : null;
+		}
+
+		if (is_null($value)) {
+			$value = $default_value;
+		}
+
+		return $value;
+	}
+
+	public function get_form_setting_value($setting_key, $form_settings) {
+		if (empty($setting_key)) {
+			return null;
+		}
+
+		$default_value = "global_setting";
+		$value = (isset($form_settings[$setting_key]) && !empty($form_settings[$setting_key])) ? $form_settings[$setting_key] : $default_value;
+
+		return $value;
+	}
+
+	public function get_active_value_for_fields($form, $setting_key, $options, $default_value) {
+		$global_value = $this->get_plugin_setting_value($setting_key, $default_value);
+		$form_value = $this->get_form_setting_value($setting_key, $this->get_form_settings($form));
+
+		$g_value = $options[$global_value];
+
+		if ($form_value == 'global_setting') {
+			/* translators: %s: global fixed width settings value */
+			$value = sprintf(esc_html__("Global: %s", "image-choices-for-gravity-forms"), $g_value);
+		} else {
+			$value = $options[$form_value];
+		}
+
+		return $value;
+	}
+
+	public function get_active_settings_value($form, $field, $setting_key, $field_key, $default_value = '', $isInputField = false) {
+		$form_settings = $this->get_form_settings($form);
+
+		$global_value = $this->get_plugin_setting_value($setting_key, $default_value, null);
+
+		if ($isInputField && $global_value === 'default') {
+			$global_value = $default_value;
+		}
+
+		$form_value = $this->get_form_setting_value($setting_key, $form_settings);
+
+		$field_value = $this->get_field_setting_value($field_key, $field);
+
+		if ($field_value === 'form_setting') {
+			return ($form_value === 'global_setting') ? $global_value : $form_value;
+		}
+
+		return $field_value;
+	}
+
+	public function get_field_setting_value($field_key, $field, $isInputField = false) {
+		if (empty($field_key)) {
+			return null;
+		}
+
+		$default_value = $isInputField ? '' : 'form_setting';
+
+		if (is_object($field)) {
+			$value = property_exists($field, $field_key) ? $field->{$field_key} : $default_value;
+		} else {
+			$value = (isset($field[$field_key]) && !empty(isset($field[$field_key]))) ? $field[$field_key] : $default_value;
+		}
+
+		return $value;
 	}
 }

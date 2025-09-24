@@ -2,11 +2,11 @@
 Author: Pluginscafe
 Author URI: https://pluginscafe.com/
 Contributors: kaisarahmmed, pluginscafe
-Tags: Image Choices, Gravity Forms, forms, images, input images
+Tags: Image choices, Gravityforms, dropdown, images, Image Picker
 Requires at least: 5.0
 Requires PHP: 5.6
-Tested up to: 6.7.1
-Stable tag: trunk
+Tested up to: 6.8
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -16,11 +16,29 @@ A simple and nice plugin to add images easily on gravity forms radio and checkbo
 == Description ==
 A simple and nice plugin to add images easily on gravity forms radio and checkbox field. It helps to add uploaded images for radio and checkbox fields with a few clicks.  It also adds a nice design on the radio and checkbox field. If the installation is okay, go to gravity forms dashboard. Add a checkbox/radio field on your form. Open the checkbox/radio field and you will see a tab called the Image Choices. After clicking that tab, an option will be shown to enable Image choice. Click that checkbox and configure it as your choice. And save the form. You're done!
 
+[View Pro Demo](https://pluginscafe.com/plugin/image-picker-for-gravity-forms-pro/) | [Buy Pro](https://pluginscafe.com/plugin/image-picker-for-gravity-forms-pro/)
+
 == Features ==
 * Awesome radio/checkbox design
 * Pick custom color
 * Add column in radio/checkbox
+* Added responsive option (new)
+* Global Settings (new)
+* Form Settings (new)
 * And more comming...
+
+== Premium Features ==
+* Single product field support
+* Product option support
+* Dropdown field support
+* Multiple choice, polls, survey, shipping support
+* 7+ beautiful themes
+* Responsive options
+* Show images in Entry / Notification
+* Image Options
+* Upcoming more options...
+
+
 
 = Requirements =
 * PHP 5.6
@@ -42,6 +60,12 @@ A simple and nice plugin to add images easily on gravity forms radio and checkbo
 
 
 == Change log ==
+
+= 1.1.3 =
+* Added Global & Form Settings
+* Improve design
+* Added responsive option
+
 = 1.1.2 = 
 * Improve design
 * Compatibility with 2.9

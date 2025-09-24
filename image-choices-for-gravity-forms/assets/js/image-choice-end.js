@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
 
         file_frame.on("select", function (event) {
             attachment = file_frame.state().get("selection").first().toJSON();
-            //console.log(attachment);
+
             self.parent()
                 .siblings(".field-choice-image-url")
                 .val(attachment.url)

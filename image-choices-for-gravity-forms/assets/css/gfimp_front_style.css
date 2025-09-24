@@ -1,0 +1,440 @@
+:root {
+    --gfimp-global-color: #0077FF;
+    --gfimp-row-gap: 20px;
+    --gfimp-column-gap: 20px;
+    --gfimp-width: 150px;
+    --gfimp-height: 135px;
+    --gfimp-icon: url('data:image/svg+xml,<svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.9158 1.626C18.0813 1.73634 18.1962 1.9079 18.2352 2.10293C18.2742 2.29796 18.2342 2.50051 18.1238 2.666L9.12385 16.166C9.06226 16.2582 8.98099 16.3357 8.88588 16.3927C8.79077 16.4498 8.68418 16.485 8.57381 16.4959C8.46344 16.5068 8.35202 16.4931 8.24758 16.4558C8.14314 16.4185 8.04829 16.3584 7.96985 16.28L1.96985 10.28C1.83737 10.1378 1.76524 9.94978 1.76867 9.75548C1.7721 9.56118 1.85081 9.3758 1.98822 9.23838C2.12564 9.10097 2.31102 9.02226 2.50532 9.01883C2.69963 9.0154 2.88767 9.08752 3.02985 9.22L8.38285 14.573L16.8758 1.833C16.9863 1.66768 17.158 1.553 17.353 1.51419C17.548 1.47537 17.7505 1.51559 17.9158 1.626Z" stroke="white" stroke-width="2"/></svg>');
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_checkbox,
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_radio {
+    display: flex;
+    row-gap: var(--gfimp-row-gap);
+    column-gap: var(--gfimp-column-gap);
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_checkbox .gchoice,
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_radio .gchoice {
+    display: flex;
+    width: 150px;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_checkbox .gchoice label,
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_radio .gchoice label {
+    margin: 0;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_checkbox .gchoice input[type=checkbox],
+.gform_wrapper .gfield.init_pcafe_imgp .gfield_radio .gchoice input[type=radio] {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    z-index: -99;
+}
+
+@media only screen and (min-width: 1080px) {
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_12 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_12 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 12 - 21px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_11 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_11 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 11 - 18.5px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_10 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_10 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 10 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_9 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_9 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 9 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_8 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_8 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 8 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_7 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_7 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 7 - 17.5px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_6 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_6 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 6 - 17px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_5 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_5 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 5 - 16px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_4 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_4 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 4 - 15px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_3 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_3 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 3 - 14px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_2 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_2 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 2 - 10px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_1 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_lg_1 .gfield_radio .gchoice {
+        flex: 0 0 100%;
+    }
+}
+
+/* Basic Theme */
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_basic .gchoice label {
+    padding: 14px;
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_basic label img {
+    height: 118px;
+    max-height: 118px;
+    width: auto;
+    object-fit: cover;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_basic .gchoice label .pcafe_imgp_text {
+    margin-top: 15px;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_basic .gchoice label:hover {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_basic .gchoice input:checked+label {
+    border-color: var(--gfimp-global-color);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_basic .gchoice .pcafe_imgp_wrap {
+    overflow: hidden;
+}
+
+/* Card theme */
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice label {
+    width: 100%;
+    max-width: 100%;
+    background: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border: 1px solid #f1f1f1;
+    transition: 0.3s;
+    margin: 0;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice input:checked+label {
+    border-color: var(--gfimp-global-color);
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice input:checked+label .pcafe_imgp_text {
+    color: var(--gfimp-global-color);
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice label .pcafe_imgp_text {
+    font-size: 15px;
+    padding: 10px 0 5px;
+    display: block;
+    line-height: 20px;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice label img {
+    height: var(--gfimp-height);
+    border-radius: 5px;
+    max-width: 100%;
+    width: 100%;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice .pcafe_imgp_wrap {
+    position: relative;
+    z-index: 1;
+    background-color: #fbfbfb;
+    display: flex;
+    justify-content: center;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice .pcafe_imgp_wrap:before {
+    position: absolute;
+    content: '';
+    background-image: var(--gfimp-icon);
+    height: 36px;
+    width: 36px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: var(--gfimp-global-color);
+    border-radius: 50%;
+    bottom: -18px;
+    right: 10px;
+    background-size: 14px;
+    transition: all ease 0.3s;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(.7);
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_card .gchoice input:checked+label .pcafe_imgp_wrap:before {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+/* Simple Theme */
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_simple .gchoice .pcafe_imgp_wrap {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+    overflow: hidden;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_simple .gchoice .pcafe_imgp_wrap img {
+    height: var(--gfimp-height);
+    width: 100%;
+    object-fit: cover;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_simple .gchoice label {
+    width: 100%;
+    max-width: 100%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_simple .gchoice input:checked+label .pcafe_imgp_wrap {
+    border-color: var(--gfimp-global-color);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.gform_wrapper .gfield.init_pcafe_imgp.pcafe_theme_simple .gchoice input:checked+label .pcafe_imgp_text {
+    color: var(--gfimp-global-color);
+}
+
+
+/* Admin Theme */
+.gfield.pcafe_imgp_admin .gfield_radio,
+.gfield.pcafe_imgp_admin .gfield_checkbox {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px !important;
+}
+
+.gfield.pcafe_imgp_admin input[type=radio],
+.gfield.pcafe_imgp_admin input[type=checkbox] {
+    display: none;
+}
+
+.gfield.pcafe_imgp_admin .gchoice label {
+    width: 100%;
+    max-width: 100%;
+    background: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border: 1px solid #f1f1f1;
+    transition: 0.3s;
+    margin: 0;
+}
+
+.gfield.pcafe_imgp_admin .gchoice label img {
+    border-radius: 5px;
+    height: 140px;
+    object-fit: cover;
+}
+
+.gfield.pcafe_imgp_admin .gchoice label .pcafe_imgp_wrap {
+    background: #f0f0f0;
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.gfield.pcafe_imgp_admin .gfield_radio .gchoice,
+.gfield.pcafe_imgp_admin .gfield_checkbox .gchoice {
+    grid-template-columns: 1fr;
+}
+
+/**
+*   Responsive
+*/
+
+@media only screen and (min-width: 768px) and (max-width: 1079px) {
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_12 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_12 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 12 - 21px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_11 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_11 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 11 - 18.5px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_10 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_10 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 10 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_9 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_9 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 9 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_8 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_8 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 8 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_7 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_7 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 7 - 17.5px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_6 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_6 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 6 - 17px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_5 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_5 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 5 - 16px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_4 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_4 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 4 - 15px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_3 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_3 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 3 - 14px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_2 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_2 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 2 - 10px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_1 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_md_1 .gfield_radio .gchoice {
+        flex: 0 0 100%;
+    }
+}
+
+
+@media only screen and (max-width: 767px) {
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_12 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_12 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 12 - 21px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_11 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_11 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 11 - 18.5px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_10 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_10 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 10 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_9 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_9 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 9 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_8 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_8 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 8 - 18px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_7 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_7 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 7 - 17.5px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_6 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_6 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 6 - 17px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_5 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_5 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 5 - 16px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_4 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_4 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 4 - 15px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_3 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_3 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 3 - 14px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_2 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_2 .gfield_radio .gchoice {
+        flex: 0 0 calc(100% / 2 - 10px);
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_1 .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_1 .gfield_radio .gchoice {
+        flex: 0 0 100%;
+    }
+
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_fixed .gfield_checkbox .gchoice,
+    .gform_wrapper .init_pcafe_imgp.pcafe_imgp_col_sm_fixed .gfield_radio .gchoice {
+        flex: 0 0 var(--imgp-sm-width);
+    }
+}
